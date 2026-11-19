@@ -11,7 +11,8 @@ class TicketControlView(discord.ui.View):
 
     @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.danger, custom_id="ticket_close")
     async def close_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if not interaction.channel.name.startswith("ticket-"):
+        ch_name = getattr(interaction.channel, "name", "")
+        if not ch_name.startswith("ticket-"):
             return await interaction.response.send_message("This is not a ticket channel!", ephemeral=True)
             
         await interaction.response.defer()
@@ -104,13 +105,15 @@ class TicketCog(commands.Cog, name="Ticket"):
             embed.set_footer(text="Please do not open a ticket without a valid reason.")
             await ctx.send(embed=embed, view=TicketPanelView())
             # Delete the setup command message if possible
-            try:
-                await ctx.message.delete()
-            except discord.Forbidden:
-                pass
+            if ctx.message:
+                try:
+                    await ctx.message.delete()
+                except (discord.Forbidden, discord.NotFound):
+                    pass
                 
         elif action == "close":
-            if not ctx.channel.name.startswith("ticket-"):
+            ch_name = getattr(ctx.channel, "name", "")
+            if not ch_name.startswith("ticket-"):
                 return await ctx.send("❌ This command can only be used in a ticket channel!")
             await ctx.send("Closing ticket in 5 seconds...")
             import asyncio

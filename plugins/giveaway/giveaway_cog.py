@@ -28,7 +28,10 @@ class GiveawayCog(commands.Cog, name="Giveaway"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.giveaway_task.start()
+
+    async def cog_load(self):
+        if not self.giveaway_task.is_running():
+            self.giveaway_task.start()
 
     def cog_unload(self):
         self.giveaway_task.cancel()
@@ -52,16 +55,26 @@ class GiveawayCog(commands.Cog, name="Giveaway"):
 
     @giveaway_task.before_loop
     async def before_giveaway_task(self):
-        await self.bot.wait_until_ready()
+        while not self.bot.is_ready():
+            if self.bot.is_closed():
+                return
+            await asyncio.sleep(1)
 
     async def end_giveaway(self, channel_id: int, message_id: int, winner_count: int, prize: str):
         channel = self.bot.get_channel(channel_id)
         if not channel:
-            return
+            try:
+                channel = await self.bot.fetch_channel(channel_id)
+            except Exception:
+                return
 
         try:
             msg = await channel.fetch_message(message_id)
-        except discord.NotFound:
+        except (discord.NotFound, discord.Forbidden):
+            data = get_giveaway_data()
+            if str(message_id) in data:
+                del data[str(message_id)]
+                save_giveaway_data(data)
             return
 
         # Find reaction

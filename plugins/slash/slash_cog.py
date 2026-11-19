@@ -50,10 +50,11 @@ class SlashCog(commands.Cog, name="Slash"):
 
     @app_commands.command(name="invite", description="Get the bot invite link")
     async def invite(self, interaction: discord.Interaction):
+        client_id = self.bot.application_id or (self.bot.user.id if self.bot.user else "")
         embed = discord.Embed(title="🤖 Bot Invite", color=discord.Color.blue())
         embed.add_field(
             name="Invite Link",
-            value=f"[Click here](https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=8&scope=bot%20applications.commands)",
+            value=f"[Click here](https://discord.com/oauth2/authorize?client_id={client_id}&permissions=8&scope=bot%20applications.commands)",
             inline=False,
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)

@@ -26,12 +26,12 @@ def beautiful_print(message: str, box_char: str = "═", padding: int = 1) -> No
     centered = [line.center(terminal_width) if line.strip() else "" for line in message_lines]
     output = f"{padding_lines}{box_line}\n" + "\n".join(centered) + f"\n{box_line}{padding_lines}"
     try:
-        print(output)
+        print(output, flush=True)
     except UnicodeEncodeError:
         # Windows cp1252 fallback — encode emoji as replacement chars
         import sys
         safe = output.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(sys.stdout.encoding or "utf-8", errors="replace")
-        print(safe)
+        print(safe, flush=True)
 
 
 # ── Duration formatters ───────────────────────────────────────────────────────
@@ -141,10 +141,13 @@ def save_afk_data(data: dict) -> None:
 
 # ── External API helpers ──────────────────────────────────────────────────────
 
+DEFAULT_HTTP_TIMEOUT = aiohttp.ClientTimeout(total=10)
+
+
 async def get_roblox_profile(username: str) -> dict | None:
-    """Fetch a Roblox user profile by username."""
+    """Fetch a Roblox user profile by username with explicit timeout."""
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=DEFAULT_HTTP_TIMEOUT) as session:
             resp = await session.post(
                 "https://users.roblox.com/v1/usernames/users",
                 json={"usernames": [username]},
@@ -190,11 +193,11 @@ async def get_roblox_profile(username: str) -> dict | None:
 
 
 async def get_fivem_players(server_address: str) -> list:
-    """Fetch players list from a FiveM server."""
+    """Fetch players list from a FiveM server with explicit timeout."""
     if not server_address:
         return []
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=DEFAULT_HTTP_TIMEOUT) as session:
             headers = {"Accept": "application/json"}
             players_resp, info_resp, dynamic_resp = await asyncio.gather(
                 session.get(f"http://{server_address}/players.json", headers=headers),
@@ -227,11 +230,11 @@ async def get_fivem_player_by_identifier(identifier: str, server_address: str) -
 
 
 async def get_fivem_server_info(server_address: str) -> dict | None:
-    """Get detailed FiveM server info."""
+    """Get detailed FiveM server info with explicit timeout."""
     if not server_address:
         return None
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=DEFAULT_HTTP_TIMEOUT) as session:
             headers = {"Accept": "application/json"}
             info_r, dyn_r, play_r = await asyncio.gather(
                 session.get(f"http://{server_address}/info.json", headers=headers),
@@ -255,11 +258,15 @@ async def get_fivem_server_info(server_address: str) -> dict | None:
 
 
 async def get_valorant_account(username: str, tag: str, riot_api_key: str, regions: list) -> dict | None:
-    async with aiohttp.ClientSession() as session:
+    """Query Riot Games account API across specified regions with explicit timeout."""
+    async with aiohttp.ClientSession(timeout=DEFAULT_HTTP_TIMEOUT) as session:
         for region in regions:
             url = f"https://{region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{username}/{tag}"
             headers = {"X-Riot-Token": riot_api_key}
-            async with session.get(url, headers=headers) as resp:
-                if resp.status == 200:
-                    return await resp.json()
+            try:
+                async with session.get(url, headers=headers) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+            except Exception as e:
+                print(f"Error checking region {region}: {e}")
     return None

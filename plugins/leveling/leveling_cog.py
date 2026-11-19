@@ -24,7 +24,10 @@ class LevelingCog(commands.Cog, name="Leveling"):
         self.bot = bot
         self.cooldowns = {}  # user_id: last_xp_time
         self.data = get_leveling_data()
-        self.save_task.start()
+
+    async def cog_load(self):
+        if not self.save_task.is_running():
+            self.save_task.start()
 
     def cog_unload(self):
         self.save_task.cancel()
@@ -110,20 +113,30 @@ class LevelingCog(commands.Cog, name="Leveling"):
         if not self.data:
             return await ctx.send("❌ No one has earned any XP yet!")
 
-        sorted_users = sorted(self.data.items(), key=lambda x: x[1]["xp"], reverse=True)[:10]
-        
+        guild_entries = []
+        for uid, info in sorted(self.data.items(), key=lambda x: x[1]["xp"], reverse=True):
+            try:
+                member = ctx.guild.get_member(int(uid)) if ctx.guild else None
+                if member:
+                    guild_entries.append((member.display_name, info))
+                if len(guild_entries) == 10:
+                    break
+            except (ValueError, TypeError):
+                continue
+
+        if not guild_entries:
+            return await ctx.send("❌ No members in this server have earned any XP yet!")
+
         embed = discord.Embed(
             title="🏆 Server Leaderboard",
             color=discord.Color.gold()
         )
-        
+
         desc = ""
-        for i, (uid, info) in enumerate(sorted_users):
-            user = ctx.guild.get_member(int(uid))
-            name = user.display_name if user else f"User {uid}"
+        for i, (name, info) in enumerate(guild_entries):
             medal = ["🥇", "🥈", "🥉"][i] if i < 3 else f"{i+1}."
             desc += f"{medal} **{name}** — Lvl {info['level']} ({info['xp']} XP)\n"
-            
+
         embed.description = desc
         await ctx.send(embed=embed)
 

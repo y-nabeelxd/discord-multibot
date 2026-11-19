@@ -19,8 +19,20 @@ from config import YT_API_KEY
 # ── Ensure ffmpeg is available (static binary via pip, works on any Linux server) ──
 try:
     import static_ffmpeg
-    static_ffmpeg.add_paths()  # adds ffmpeg/ffprobe to PATH automatically
-    print("[Music] static-ffmpeg paths added successfully.")
+    try:
+        static_ffmpeg.add_paths()
+        print("[Music] static-ffmpeg paths added successfully.")
+    except Exception:
+        # Fallback for permission/sandbox restrictions on file lock
+        import sys, shutil
+        platform_dir = "win32" if sys.platform == "win32" else "linux"
+        bin_dir = os.path.join(os.path.dirname(static_ffmpeg.__file__), "bin", platform_dir)
+        if os.path.isdir(bin_dir) and bin_dir not in os.environ.get("PATH", ""):
+            os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
+        if shutil.which("ffmpeg"):
+            print("[Music] static-ffmpeg manual path added successfully.")
+        else:
+            print("[Music] Note: static_ffmpeg lock bypass tried; relying on system PATH.")
 except ImportError:
     pass  # If not installed, rely on system ffmpeg
 
@@ -114,7 +126,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     @classmethod
     async def from_url(cls, url: str, *, loop: asyncio.AbstractEventLoop = None, stream: bool = True):
-        loop = loop or asyncio.get_event_loop()
+        loop = loop or asyncio.get_running_loop()
 
         # If it's a search query and we have an API key, resolve it first
         if not url.startswith("http") and YT_API_KEY:
@@ -133,14 +145,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
             title_to_search = url  # default fallback
             if "youtube.com" in url or "youtu.be" in url:
                 try:
-                    import re, urllib.request, json as _json
+                    import re
                     vid_match = re.search(r"(?:v=|youtu\.be/)([a-zA-Z0-9_-]{11})", url)
                     if vid_match:
                         vid_id = vid_match.group(1)
                         oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={vid_id}&format=json"
-                        with urllib.request.urlopen(oembed_url, timeout=5) as r:
-                            title_to_search = _json.loads(r.read())["title"]
-                            print(f"[Music] Got title via oEmbed: {title_to_search!r}")
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(oembed_url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                                if resp.status == 200:
+                                    oembed_data = await resp.json()
+                                    title_to_search = oembed_data.get("title", url)
+                                    print(f"[Music] Got title via oEmbed: {title_to_search!r}")
                 except Exception as title_err:
                     print(f"[Music] oEmbed title fetch failed: {title_err}. Using raw URL as query.")
 
@@ -177,7 +192,7 @@ async def search_youtube(query: str, max_results: int = 10) -> list[dict]:
                 res["duration"] = "N/A"
             return api_results
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     search_opts = {
         **YTDL_FORMAT_OPTIONS,
         "extract_flat": True,       # Only for search listing — we re-extract on play

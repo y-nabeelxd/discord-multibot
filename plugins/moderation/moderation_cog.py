@@ -366,13 +366,18 @@ class ModerationCog(commands.Cog, name="Moderation"):
         """Delete messages from the channel (max 100). Usage: !purge [amount]"""
         if not 1 <= amount <= 100:
             return await ctx.send("❌ Provide a number between 1 and 100.")
-        deleted = await ctx.channel.purge(limit=amount + 1)
+        limit = amount if ctx.interaction else amount + 1
+        deleted = await ctx.channel.purge(limit=limit)
+        count = len(deleted) if ctx.interaction else max(0, len(deleted) - 1)
         embed = discord.Embed(
             title="🗑️ Messages Purged",
-            description=f"Deleted {len(deleted) - 1} messages.",
+            description=f"Deleted {count} messages.",
             color=discord.Color.green(),
         )
-        await ctx.send(embed=embed, delete_after=5)
+        if ctx.interaction:
+            await ctx.send(embed=embed, ephemeral=True)
+        else:
+            await ctx.send(embed=embed, delete_after=5)
 
     @commands.hybrid_command()
     @commands.has_permissions(manage_channels=True)

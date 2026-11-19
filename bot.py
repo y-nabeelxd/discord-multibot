@@ -65,7 +65,10 @@ class MyBot(commands.Bot):
 
     @status_task.before_loop
     async def before_status_task(self):
-        await self.wait_until_ready()
+        while not self.is_ready():
+            if self.is_closed():
+                return
+            await asyncio.sleep(1)
 
     async def setup_hook(self):
         """Load all plugin cogs before the bot connects."""
@@ -78,11 +81,12 @@ class MyBot(commands.Bot):
                 failed.append(f"{ext}: {e}")
                 print(f"[Cog Error] Failed to load {ext}: {e}")
 
-        print(f"[Cogs] Loaded: {', '.join(loaded)}")
+        print(f"[Cogs] Loaded: {', '.join(loaded)}", flush=True)
         if failed:
-            print(f"[Cogs] Failed: {'; '.join(failed)}")
+            print(f"[Cogs] Failed: {'; '.join(failed)}", flush=True)
             
-        self.status_task.start()
+        if not self.status_task.is_running():
+            self.status_task.start()
 
     async def on_connect(self):
         clear_console()
@@ -149,6 +153,8 @@ class MyBot(commands.Bot):
             msg = "❌ You don't have permission to use this command!"
         elif isinstance(error, app_commands.BotMissingPermissions):
             msg = "❌ I lack the permissions needed to execute this command."
+        elif isinstance(error, app_commands.CheckFailure):
+            msg = "❌ You do not have permission or do not meet the requirements to run this command."
         else:
             print(f"[Slash Error] {interaction.command.name if interaction.command else 'Unknown'}: {error}")
             msg = "⚠️ An unexpected error occurred."

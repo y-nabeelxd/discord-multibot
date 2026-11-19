@@ -52,6 +52,9 @@ class SongSelect(discord.ui.Select):
             pass
 
         vc = self.ctx.voice_client
+        if not vc or not vc.is_connected():
+            return await self.ctx.send("❌ I am no longer connected to a voice channel! Use `!play` again.")
+
         guild_id = self.ctx.guild.id
         song_queues.setdefault(guild_id, [])
 
@@ -360,10 +363,13 @@ class MusicCog(commands.Cog, name="Music"):
         guild_id = ctx.guild.id
         q = song_queues.get(guild_id, [])
         if q:
-            lines = [f"{i+1}. {s['title']}" for i, s in enumerate(q)]
+            display_count = 15
+            lines = [f"{i+1}. {s['title']}" for i, s in enumerate(q[:display_count])]
+            if len(q) > display_count:
+                lines.append(f"\n*…and {len(q) - display_count} more songs*")
             embed = discord.Embed(
                 title="🎶 Song Queue",
-                description="\n".join(lines),
+                description="\n".join(lines)[:4000],
                 color=discord.Color.blue(),
             )
             await ctx.send(embed=embed)

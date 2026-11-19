@@ -166,8 +166,9 @@ class EconomyCog(commands.Cog, name="Economy"):
             diff = datetime.timedelta(hours=24)
             if now - last < diff:
                 remaining = diff - (now - last)
-                h = remaining.seconds // 3600
-                m = (remaining.seconds % 3600) // 60
+                total_secs = int(remaining.total_seconds())
+                h = total_secs // 3600
+                m = (total_secs % 3600) // 60
                 return await ctx.send(f"⏳ Next daily in **{h}h {m}m**!")
 
         amount = random.randint(300, 5000)
@@ -252,7 +253,7 @@ class EconomyCog(commands.Cog, name="Economy"):
 
         embed = discord.Embed(
             title="💼 Hard Work Pays Off",
-            description=f"You {job} and earned **{amount} coins**!\\nNew Balance: **{data[uid]['balance']} coins**",
+            description=f"You {job} and earned **{amount} coins**!\nNew Balance: **{data[uid]['balance']} coins**",
             color=discord.Color.green(),
         )
         await ctx.send(embed=embed)
@@ -283,7 +284,7 @@ class EconomyCog(commands.Cog, name="Economy"):
 
         embed = discord.Embed(
             title="💸 Payment Successful",
-            description=f"You paid **{amount} coins** to {member.mention}.\\nYour new balance: **{data[uid_sender]['balance']} coins**",
+            description=f"You paid **{amount} coins** to {member.mention}.\nYour new balance: **{data[uid_sender]['balance']} coins**",
             color=discord.Color.green(),
         )
         await ctx.send(embed=embed)
@@ -311,8 +312,9 @@ class EconomyCog(commands.Cog, name="Economy"):
             diff = datetime.timedelta(hours=2)
             if now - last < diff:
                 remaining = diff - (now - last)
-                h = remaining.seconds // 3600
-                m = (remaining.seconds % 3600) // 60
+                total_secs = int(remaining.total_seconds())
+                h = total_secs // 3600
+                m = (total_secs % 3600) // 60
                 return await ctx.send(f"🚔 The cops are looking for you! Lay low for **{h}h {m}m**.")
 
         if data[uid_sender]["balance"] < 500:
@@ -336,7 +338,7 @@ class EconomyCog(commands.Cog, name="Economy"):
             
             embed = discord.Embed(
                 title="🥷 Robbery Successful!",
-                description=f"You sneaked away with **{amount} coins** from {member.mention}!\\nYour new balance: **{data[uid_sender]['balance']} coins**",
+                description=f"You sneaked away with **{amount} coins** from {member.mention}!\nYour new balance: **{data[uid_sender]['balance']} coins**",
                 color=discord.Color.green(),
             )
         else:
@@ -346,7 +348,7 @@ class EconomyCog(commands.Cog, name="Economy"):
             
             embed = discord.Embed(
                 title="🚨 BUSTED!",
-                description=f"You got caught trying to rob {member.mention} and were fined **{fine} coins**!\\nYour new balance: **{data[uid_sender]['balance']} coins**",
+                description=f"You got caught trying to rob {member.mention} and were fined **{fine} coins**!\nYour new balance: **{data[uid_sender]['balance']} coins**",
                 color=discord.Color.red(),
             )
 

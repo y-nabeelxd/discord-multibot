@@ -85,11 +85,11 @@ class FiveMVerificationView(discord.ui.View):
             embed.add_field(name="Player ID", value=self.player_data.get("id", "N/A"), inline=True)
             embed.add_field(name="Server", value=self.server_address, inline=True)
 
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             try:
                 await interaction.message.delete()
             except Exception:
                 pass
-            await interaction.response.send_message(embed=embed, ephemeral=True)
             await self.ctx.send(
                 f"Connected to {self.player_data.get('id', 'N/A')} | {self.player_data['name']} > {self.ctx.author.mention}"
             )
@@ -233,7 +233,7 @@ class VerificationCog(commands.Cog, name="Verification"):
                     print(f"[FiveM Status] Error: {ex}")
                     await asyncio.sleep(60)
 
-        task = self.bot.loop.create_task(update_status())
+        task = asyncio.create_task(update_status())
         self.bot.fivem_status_tasks[target.id] = {"task": task, "message": status_msg}
         await ctx.message.add_reaction("✅")
 
@@ -483,7 +483,12 @@ class VerificationCog(commands.Cog, name="Verification"):
                 
         elif verif_type == "rcon":
             import random
+            import re
             playername = arg.strip()
+            # SA-MP usernames only allow alphanumeric characters and [], _, ., $, @, =
+            if not re.match(r"^[a-zA-Z0-9_\[\]\.\$@=]+$", playername):
+                return await ctx.send("❌ Invalid player name! Only letters, numbers, and standard characters `_ [ ] . $ @ =` are allowed.")
+
             if not config.SAMP_SERVER_IP or not config.SAMP_SERVER_PORT:
                 return await ctx.send("❌ SA-MP server IP/Port not configured.")
             if not config.SAMP_RCON_PASSWORD:
@@ -505,8 +510,7 @@ class VerificationCog(commands.Cog, name="Verification"):
                 cmd_bytes = cmd.encode('windows-1252')
                 packet += struct.pack('<H', len(cmd_bytes)) + cmd_bytes
                 
-                import asyncio
-                loop = asyncio.get_event_loop()
+                loop = asyncio.get_running_loop()
                 def _send():
                     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                         s.settimeout(2.0)
