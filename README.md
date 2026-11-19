@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🤖 Discord MultiBot
+# Discord MultiBot
 
-**All-in-one Discord bot with music streaming, economy games, moderation, and multi-game verification.**
+**Modular Discord bot written in Python for music streaming, moderation, economy, and player verification.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://python.org)
 [![discord.py](https://img.shields.io/badge/discord.py-2.3%2B-5865F2?logo=discord&logoColor=white)](https://discordpy.readthedocs.io)
@@ -11,69 +11,69 @@
 [![GitHub Forks](https://img.shields.io/github/forks/y-nabeelxd/discord-multibot?style=social)](https://github.com/y-nabeelxd/discord-multibot)
 [![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
 
-[**Quick Start**](#-setup--installation) • [**Features**](#-features) • [**Commands Reference**](#-hybrid-commands-slash--prefix) • [**Verification Guide**](#-multi-game-verification)
+[Quick Start](#setup--installation) • [Features](#features) • [Commands](#commands) • [Verification](#multi-game-verification) • [License](#license)
 
 ---
 
 </div>
 
-## 🌟 Why Discord MultiBot?
+## Overview
 
-**Discord MultiBot** is a production-ready, modular Discord bot written in **Python 3.10+** using **discord.py 2.3+**. Built with an extensible cog-based architecture, it combines high-performance audio streaming, comprehensive server moderation, interactive economy minigames, support tickets, and game player verification into a single unified bot.
+Discord MultiBot is a cog-based bot written with `discord.py` 2.3+. It consolidates audio streaming, moderation utilities, game verification checks, virtual economy minigames, and support ticket management into a single service.
 
-- 🎵 **High-Quality Audio**: Built on `yt-dlp` and `FFmpeg` with automatic SoundCloud fallback and interactive button player.
-- 🛡️ **Advanced Moderation**: Full punishment suite (ban, kick, timeout, warn, purge, slowmode, channel clone/nuke).
-- 🔒 **Multi-Game Verification**: Automated player verification for **Roblox** (bio code), **FiveM** (server query), and **SA:MP** (MySQL/RCON).
-- ⚡ **Full Hybrid Support**: Use commands either as modern Slash commands (`/command`) or traditional text prefixes (`!command`).
-- 🪙 **Interactive Economy & Minigames**: Daily rewards, coinflip, slots, blackjack, work, and community leveling.
-- 🎫 **Support Tickets & Giveaways**: Button-driven ticket panels with private threads and automated giveaway timers.
-
----
-
-## ✨ Features Matrix
-
-| Category                 | Highlights                                                                   | Slash Ready |
-| :----------------------- | :--------------------------------------------------------------------------- | :---------: |
-| 🎵 **Music Streaming**   | Search, queue, skip, pause, resume, lyrics, SoundCloud fallback              |     ✅      |
-| 🛡️ **Server Moderation** | Ban, kick, timeout (1s–28d), warn tracking, message purge, lock/unlock       |     ✅      |
-| 🔒 **Game Verification** | Roblox (code-in-bio), FiveM (live server status), SA:MP (MySQL/RCON)         |     ✅      |
-| 🏆 **Leveling & XP**     | Passive chat XP, customizable user rank cards, server leaderboards           |     ✅      |
-| 🎫 **Support Tickets**   | Ephemeral ticket panels, staff roles, transcripts, button closes             |     ✅      |
-| 🎉 **Giveaways**         | Timed giveaways with interactive join buttons and auto-roller                |     ✅      |
-| 🪙 **Economy & Games**   | Daily coins, coinflip, slots, pay, work, rob                                 |     ✅      |
-| 🎮 **Fun & Social**      | Tic-Tac-Toe, RPS, 8-Ball, Trivia, meme generator, ship, slap, hug            |     ✅      |
-| 🔧 **Utility & Tools**   | Safe calculator, weather lookup, Google translation, polls, reminders, snipe |     ✅      |
+- **Audio playback**: Streaming engine backed by `yt-dlp` and `FFmpeg` with automatic SoundCloud fallback and button controls.
+- **Server moderation**: Punishment tools including bans, kicks, timeouts, warnings, channel locks, and message purging.
+- **Player verification**: Account verification for Roblox (code in bio), FiveM (live server queries), and SA:MP (MySQL/RCON).
+- **Hybrid commands**: All primary commands work both as slash commands (`/`) and message prefixes (`!`).
+- **Economy and minigames**: Virtual balance, daily rewards, coinflip, slots, work, and chat-based XP progression.
+- **Tickets and giveaways**: Interactive button panels for support threads and automated giveaway timers.
 
 ---
 
-## 📂 Project Architecture
+## Features
+
+| Category     | Description                                                                | Slash Support |
+| :----------- | :------------------------------------------------------------------------- | :-----------: |
+| Music        | Search, queue, skip, pause, resume, lyrics, SoundCloud fallback            |      Yes      |
+| Moderation   | Ban, kick, timeout (1s to 28d), warnings, message purge, channel lock      |      Yes      |
+| Verification | Roblox (code-in-bio), FiveM (query), SA:MP (MySQL/RCON)                    |      Yes      |
+| Leveling     | Passive chat XP, rank cards, server leaderboard                            |      Yes      |
+| Tickets      | Button panel, private thread creation, transcript exports                  |      Yes      |
+| Giveaways    | Timed entries with button join and automatic winner selection              |      Yes      |
+| Economy      | Balance tracking, daily claims, coinflip, slots, transfers                 |      Yes      |
+| Games        | Tic-Tac-Toe, Rock Paper Scissors, 8-Ball, Trivia, coin flip                |      Yes      |
+| Utilities    | Safe AST calculator, weather reports, Google translation, polls, reminders |      Yes      |
+
+---
+
+## Project Structure
 
 ```
 discord-multibot/
-├── bot.py                     # Bot entrypoint & startup lifecycle
-├── config.py                  # Typed configuration loaded from .env
-├── utils.py                   # Reusable helpers, console formatting & API clients
-├── test_load.py               # Automated verification test suite for cogs & evaluator
+├── bot.py                     # Bot entrypoint and extension loader
+├── config.py                  # Configuration loader backed by .env
+├── utils.py                   # Reusable helpers and network clients
+├── test_load.py               # Automated verification test suite
 ├── requirements.txt           # Python package dependencies
-├── .env.example               # Environment variables template
-├── .gitignore                 # Protected secrets & clean repository ignore rules
+├── .env.example               # Environment variable template
+├── .gitignore                 # Tracked file exclusions
 ├── .prettierrc.json           # Code style formatting rules
-└── plugins/                   # Modular cog extensions
-    ├── music/                 # Audio streaming engine (yt-dlp + FFmpeg)
-    ├── moderation/            # Server protection & member discipline
+└── plugins/                   # Cog modules
+    ├── music/                 # Audio streaming (yt-dlp + FFmpeg)
+    ├── moderation/            # Member and channel administration
     ├── verification/          # Roblox, FiveM, and SA:MP verification
-    ├── leveling/              # XP algorithms & leaderboard storage
-    ├── ticket/                # Ticket creation panels & channel lifecycle
+    ├── leveling/              # XP calculation and storage
+    ├── ticket/                # Ticket panels and channel management
     ├── giveaway/              # Timed giveaway coordinator
-    ├── economy/               # Virtual currency & gambling minigames
-    ├── fun/                   # Social commands & button minigames
+    ├── economy/               # Virtual currency and games
+    ├── fun/                   # Social commands and minigames
     ├── utility/               # Weather, calculator, translate, reminder
-    └── slash/                 # Dedicated slash management & voice controls
+    └── slash/                 # Dedicated slash management and voice routing
 ```
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### 1. Clone the repository
 
@@ -89,7 +89,7 @@ pip install -r requirements.txt
 ```
 
 > [!NOTE]
-> **FFmpeg Requirement**: FFmpeg is bundled automatically on Windows via `static-ffmpeg`. For native Linux hosting, install it with:
+> On Windows, `static-ffmpeg` configures FFmpeg automatically. On Linux servers, install FFmpeg via your package manager:
 >
 > ```bash
 > sudo apt update && sudo apt install -y ffmpeg
@@ -97,26 +97,26 @@ pip install -r requirements.txt
 
 ### 3. Configure environment variables
 
-Copy the example template to create your `.env` file:
+Copy the template:
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` in your text editor and fill in your keys:
+Set your values in `.env`:
 
 ```env
-# Core Bot Settings
+# Bot configuration
 DISCORD_TOKEN=your_bot_token_here
 PREFIX=!
 GAME_PREFIX=owo
 BOT_OWNER_ID=your_discord_user_id
 
-# Optional API Integrations
-WEATHER_API_KEY=your_openweathermap_api_key
+# Optional services
+WEATHER_API_KEY=your_openweathermap_key
 YT_COOKIES=cookies.txt
 
-# Multi-Game Verification Toggles
+# Verification settings
 VERIFICATION_ROBLOX=true
 ROBLOX_ROLE_ID=123456789012345678
 
@@ -129,22 +129,15 @@ SAMP_ROLE_ID=123456789012345678
 ```
 
 > [!IMPORTANT]
-> **Enable Privileged Gateway Intents**:
-> Go to the [Discord Developer Portal](https://discord.com/developers/applications) > **Bot** > Enable all three options under **Privileged Gateway Intents**:
->
-> - **Presence Intent**
-> - **Server Members Intent**
-> - **Message Content Intent**
+> Enable all three **Privileged Gateway Intents** (Presence, Server Members, Message Content) in the [Discord Developer Portal](https://discord.com/developers/applications) under your bot application settings.
 
-### 4. Run automated verification tests
-
-Ensure all 10 cogs and security evaluators pass before launching:
+### 4. Run verification tests
 
 ```bash
 python test_load.py
 ```
 
-### 5. Launch the bot
+### 5. Start the bot
 
 ```bash
 python bot.py
@@ -152,99 +145,89 @@ python bot.py
 
 ---
 
-## ⚡ Hybrid Commands (Slash + Prefix)
+## Commands
 
-Every command supports both traditional text triggers (`!command`) and Discord Slash commands (`/command`).
+All commands can be invoked with the configured prefix (`!`) or through native slash commands (`/`).
 
-### 🎵 Music Commands
+### Music
 
-| Command               | Usage                      | Description                                   |
-| :-------------------- | :------------------------- | :-------------------------------------------- |
-| `!play` / `/play`     | `!play <song name or URL>` | Search YouTube or play direct audio stream    |
-| `!lyrics` / `/lyrics` | `!lyrics [song name]`      | Fetch lyrics for current or specified track   |
-| `!queue` / `/queue`   | `!queue`                   | Display current track queue with pagination   |
-| `!skip` / `/skip`     | `!skip`                    | Vote or force skip to next queued song        |
-| `!pause` / `/pause`   | `!pause`                   | Pause current playback session                |
-| `!resume` / `/resume` | `!resume`                  | Resume paused playback session                |
-| `!stop` / `/stop`     | `!stop`                    | Clear active queue and leave voice channel    |
-| `!vc247` / `/vc247`   | `!vc247`                   | Keep the bot in the voice channel permanently |
+| Command   | Usage                  | Description                                    |
+| :-------- | :--------------------- | :--------------------------------------------- |
+| `!play`   | `!play <query or URL>` | Search or stream audio into your voice channel |
+| `!lyrics` | `!lyrics [song name]`  | Retrieve song lyrics                           |
+| `!queue`  | `!queue`               | Show active playlist queue                     |
+| `!skip`   | `!skip`                | Skip current track                             |
+| `!pause`  | `!pause`               | Pause active playback                          |
+| `!resume` | `!resume`              | Resume paused playback                         |
+| `!stop`   | `!stop`                | Stop playback and clear the queue              |
+| `!vc247`  | `!vc247`               | Toggle 24/7 voice channel stay                 |
 
-### 🛡️ Moderation Commands
+### Moderation
 
-| Command                   | Usage                         |   Permissions   | Description                                        |
-| :------------------------ | :---------------------------- | :-------------: | :------------------------------------------------- |
-| `!ban` / `/ban`           | `!ban @user [reason]`         |   Ban Members   | Permanently bans a member from the server          |
-| `!kick` / `/kick`         | `!kick @user [reason]`        |  Kick Members   | Kicks a member from the server                     |
-| `!timeout` / `/timeout`   | `!timeout @user 10m [reason]` |    Moderate     | Times out a member (e.g. `30s`, `15m`, `2h`, `7d`) |
-| `!warn` / `/warn`         | `!warn @user [reason]`        |    Moderate     | Logs a persistent warning for a member             |
-| `!warnings` / `/warnings` | `!warnings [@user]`           |    Moderate     | Lists all recorded warnings for a member           |
-| `!purge` / `/purge`       | `!purge <1-100>`              | Manage Messages | Bulk deletes up to 100 recent messages             |
-| `!lock` / `/lock`         | `!lock [#channel]`            | Manage Channels | Locks down channel send permissions                |
-| `!unlock` / `/unlock`     | `!unlock [#channel]`          | Manage Channels | Restores channel send permissions                  |
-| `!nuke` / `/nuke`         | `!nuke [#channel]`            |  Administrator  | Clones channel settings and deletes old one        |
+| Command     | Usage                         | Required Permission | Description                             |
+| :---------- | :---------------------------- | :-----------------: | :-------------------------------------- |
+| `!ban`      | `!ban @user [reason]`         |     Ban Members     | Ban a member                            |
+| `!kick`     | `!kick @user [reason]`        |    Kick Members     | Kick a member                           |
+| `!timeout`  | `!timeout @user 15m [reason]` |  Moderate Members   | Apply timeout (`1s` to `28d`)           |
+| `!warn`     | `!warn @user [reason]`        |  Moderate Members   | Record a user warning                   |
+| `!warnings` | `!warnings [@user]`           |  Moderate Members   | List recorded warnings                  |
+| `!purge`    | `!purge <count>`              |   Manage Messages   | Delete recent messages (max 100)        |
+| `!lock`     | `!lock [#channel]`            |   Manage Channels   | Prevent members from sending messages   |
+| `!unlock`   | `!unlock [#channel]`          |   Manage Channels   | Re-enable message permissions           |
+| `!nuke`     | `!nuke [#channel]`            |    Administrator    | Recreate channel and delete old history |
 
-### 🔒 Multi-Game Verification
+### Multi-Game Verification
 
-| Game             | Command                       |     Method     | Details                                                 |
-| :--------------- | :---------------------------- | :------------: | :------------------------------------------------------ |
-| **Roblox**       | `!verifyroblox <username>`    |    Bio Code    | Generates unique security code to place in profile bio  |
-| **FiveM**        | `!verifyfivem <name/id>`      |  Server Query  | Queries live FiveM server player list                   |
-| **FiveM Live**   | `!fivemserverlive [#channel]` | Realtime Embed | Auto-updating embed with player count and server status |
-| **SA:MP**        | `!verifysamp [code/name]`     |  MySQL / RCON  | Verifies against game database or live RCON status      |
-| **SA:MP Status** | `!sampstatus`                 |  Query Socket  | Live server query for player count and ping             |
+| Platform         | Command                       |    Method    | Details                                          |
+| :--------------- | :---------------------------- | :----------: | :----------------------------------------------- |
+| **Roblox**       | `!verifyroblox <username>`    | Code in bio  | Generates verification code for user profile bio |
+| **FiveM**        | `!verifyfivem <name/id>`      | Server query | Queries online players on target FiveM server    |
+| **FiveM Live**   | `!fivemserverlive [#channel]` | Status embed | Auto-updating embed tracking server status       |
+| **SA:MP**        | `!verifysamp [code/name]`     | MySQL / RCON | Validates account credentials against database   |
+| **SA:MP Status** | `!sampstatus`                 | Query packet | Displays player count and server status          |
 
-### 🪙 Economy & Gambling (Prefix: `owo`)
+### Economy (Prefix: `owo`)
 
-| Command        | Usage                                 | Description                                         |
-| :------------- | :------------------------------------ | :-------------------------------------------------- |
-| `owo daily`    | `owo daily`                           | Claim your free daily coin reward (300–5,000 coins) |
-| `owo balance`  | `owo balance [@user]`                 | View your wallet and bank balance                   |
-| `owo coinflip` | `owo coinflip <amount> [heads/tails]` | Wager coins on a coinflip                           |
-| `owo slots`    | `owo slots <amount>`                  | Bet coins on the slot machine                       |
-| `owo work`     | `owo work`                            | Complete a quick job to earn coins                  |
-| `owo pay`      | `owo pay @user <amount>`              | Transfer coins directly to another member           |
-| `owo rob`      | `owo rob @user`                       | Attempt to steal coins from another user            |
+| Command        | Usage                                 | Description                              |
+| :------------- | :------------------------------------ | :--------------------------------------- |
+| `owo daily`    | `owo daily`                           | Claim daily coins (300 to 5,000)         |
+| `owo balance`  | `owo balance [@user]`                 | View wallet balance                      |
+| `owo coinflip` | `owo coinflip <amount> [heads/tails]` | Wager coins on a coin flip               |
+| `owo slots`    | `owo slots <amount>`                  | Bet coins on the slot machine            |
+| `owo work`     | `owo work`                            | Complete a job for currency              |
+| `owo pay`      | `owo pay @user <amount>`              | Transfer coins to another user           |
+| `owo rob`      | `owo rob @user`                       | Attempt to steal coins from another user |
 
-### 🎫 Tickets & 🎉 Giveaways
+### Tickets & Giveaways
 
-| Command         | Usage                              | Description                                                    |
-| :-------------- | :--------------------------------- | :------------------------------------------------------------- |
-| `!ticket setup` | `!ticket setup [#channel]`         | Deploys an interactive button panel for support tickets        |
-| `!ticket close` | `!ticket close`                    | Archives and closes the current ticket thread                  |
-| `!gstart`       | `!gstart <time> <winners> <prize>` | Launches a timed giveaway (e.g. `!gstart 2h 1w Discord Nitro`) |
-| `!gend`         | `!gend <message_id>`               | Manually concludes an active giveaway                          |
-| `!greroll`      | `!greroll <message_id>`            | Rerolls a new winner for a completed giveaway                  |
-
----
-
-## 🛠️ Security & Safe Design
-
-- **AST-Based Math Evaluator**: Math parsing uses safe Abstract Syntax Tree analysis with exponent thresholds, preventing code execution (`eval`) and memory denial-of-service.
-- **Defensive API Calls**: All external HTTP requests enforce strict connection timeouts (10s) with exception fallbacks.
-- **Safe Interaction Lifecycle**: Slash command responses and message deletions are cleanly guarded to avoid Discord API 404/400 exceptions.
+| Command         | Usage                                  | Description                       |
+| :-------------- | :------------------------------------- | :-------------------------------- |
+| `!ticket setup` | `!ticket setup [#channel]`             | Post ticket creation button panel |
+| `!ticket close` | `!ticket close`                        | Close active ticket thread        |
+| `!gstart`       | `!gstart <duration> <winners> <prize>` | Start timed giveaway              |
+| `!gend`         | `!gend <message_id>`                   | End giveaway immediately          |
+| `!greroll`      | `!greroll <message_id>`                | Select a new winner               |
 
 ---
 
-## 🤝 Contributing
+## Security
 
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the Project: `https://github.com/y-nabeelxd/discord-multibot`
-2. Create your Feature Branch: `git checkout -b feat/amazing-feature`
-3. Commit your Changes: `git commit -m 'feat: add amazing feature'`
-4. Push to the Branch: `git push origin feat/amazing-feature`
-5. Open a Pull Request
+- **Safe math evaluation**: Calculator queries are parsed via Abstract Syntax Trees (`ast.parse`) instead of Python `eval()`. Disallows imports, attributes, and exponent computations exceeding threshold limits.
+- **Bounded network calls**: All outbound HTTP requests enforce an explicit 10-second timeout to avoid event loop stalls.
+- **Interaction safety**: Hybrid command handlers verify message existence before deletion to avoid `404 Unknown Interaction` errors.
 
 ---
 
-## 📄 License
+## Contributing
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+1. Fork `https://github.com/y-nabeelxd/discord-multibot`
+2. Create your branch: `git checkout -b feature/improvement`
+3. Commit changes: `git commit -m 'feat: add improvement'`
+4. Push to branch: `git push origin feature/improvement`
+5. Open a pull request
 
-<div align="center">
+---
 
-**Maintained by [y-nabeelxd](https://github.com/y-nabeelxd)**
+## License
 
-_If you found this bot helpful, give it a ⭐ star on GitHub!_
-
-</div>
+MIT License. See [LICENSE](LICENSE) for details.

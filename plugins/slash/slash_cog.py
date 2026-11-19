@@ -30,18 +30,18 @@ class SlashCog(commands.Cog, name="Slash"):
     async def sc(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title="Discord MultiBot",
-            description="A multipurpose Discord bot with music, verification, and moderation tools",
-            color=discord.Color.blue(),
+            description="Modular Discord bot written in Python for music streaming, moderation, economy, and player verification.",
+            color=discord.Color(0x5865F2),
         )
         embed.add_field(
-            name="GitHub",
-            value="[Visit GitHub](https://github.com/y-nabeelxd/discord-multibot)",
+            name="Source Code",
+            value="[github.com/y-nabeelxd/discord-multibot](https://github.com/y-nabeelxd/discord-multibot)",
             inline=False,
         )
         view = discord.ui.View()
         view.add_item(
             discord.ui.Button(
-                label="Visit GitHub",
+                label="GitHub Repository",
                 style=discord.ButtonStyle.link,
                 url="https://github.com/y-nabeelxd/discord-multibot",
             )
