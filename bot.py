@@ -183,7 +183,7 @@ class HelpCommand(commands.HelpCommand):
         )
 
         music = ["play", "skip", "queue", "clearqueue", "pause", "resume", "stop", "leave"]
-        embed.add_field(name="Music", value=", ".join(f"`{config.PREFIX}{c}`" for c in music), inline=False)
+        embed.add_field(name="🎵 Music", value=", ".join(f"`{config.PREFIX}{c}`" for c in music), inline=False)
 
         verif = []
         if config.VERIFICATION_FIVEM and config.FIVEM_SERVER:
@@ -195,7 +195,7 @@ class HelpCommand(commands.HelpCommand):
         if config.VERIFICATION_VALO and config.RIOT_API_KEY:
             verif.append("verifyvalo")
         if verif:
-            embed.add_field(name="Verification", value=", ".join(f"`{config.PREFIX}{c}`" for c in verif), inline=False)
+            embed.add_field(name="🔒 Verification", value=", ".join(f"`{config.PREFIX}{c}`" for c in verif), inline=False)
 
         mod = [
             "ban", "kick", "timeout", "slowmode", "slowoff", "setnick", "resetnick",
@@ -203,32 +203,32 @@ class HelpCommand(commands.HelpCommand):
             "lock", "unlock", "warn", "warnings", "clearwarns", "mute", "unmute",
             "purge", "nuke", "clone",
         ]
-        embed.add_field(name="Moderation", value=", ".join(f"`{config.PREFIX}{c}`" for c in mod), inline=False)
+        embed.add_field(name="🛡️ Moderation", value=", ".join(f"`{config.PREFIX}{c}`" for c in mod), inline=False)
 
         games = ["rps", "roll", "flipcoin", "guess", "8ball", "tictactoe", "trivia"]
-        embed.add_field(name="Games", value=", ".join(f"`{config.PREFIX}{c}`" for c in games), inline=False)
+        embed.add_field(name="🎮 Games", value=", ".join(f"`{config.PREFIX}{c}`" for c in games), inline=False)
 
         gp = config.GAME_PREFIX
         economy = [f"{gp} daily", f"{gp} balance", f"{gp} coinflip", f"{gp} slots", f"{gp} work", f"{gp} pay", f"{gp} rob"]
-        embed.add_field(name="Economy", value=", ".join(f"`{c}`" for c in economy), inline=False)
+        embed.add_field(name=f"🪙 Economy ({gp})", value=", ".join(f"`{c}`" for c in economy), inline=False)
 
         lvl = ["rank", "leaderboard"]
-        embed.add_field(name="Leveling", value=", ".join(f"`{config.PREFIX}{c}`" for c in lvl), inline=False)
+        embed.add_field(name="🏆 Leveling", value=", ".join(f"`{config.PREFIX}{c}`" for c in lvl), inline=False)
 
         fun = ["slap", "kiss", "hug", "meme", "ship", "minesweeper"]
-        embed.add_field(name="Social", value=", ".join(f"`{config.PREFIX}{c}`" for c in fun), inline=False)
+        embed.add_field(name="🎭 Social & Fun", value=", ".join(f"`{config.PREFIX}{c}`" for c in fun), inline=False)
 
         util = ["poll", "avatar", "serverinfo", "userinfo", "remind", "translate", "weather", "calc", "vc247", "afk", "snipe"]
-        embed.add_field(name="Utility", value=", ".join(f"`{config.PREFIX}{c}`" for c in util), inline=False)
+        embed.add_field(name="🔧 Utility", value=", ".join(f"`{config.PREFIX}{c}`" for c in util), inline=False)
 
         ticket = ["ticket setup", "ticket close"]
-        embed.add_field(name="Tickets", value=", ".join(f"`{config.PREFIX}{c}`" for c in ticket), inline=False)
+        embed.add_field(name="🎫 Tickets", value=", ".join(f"`{config.PREFIX}{c}`" for c in ticket), inline=False)
 
         gw = ["gstart", "gend", "greroll"]
-        embed.add_field(name="Giveaways", value=", ".join(f"`{config.PREFIX}{c}`" for c in gw), inline=False)
+        embed.add_field(name="🎉 Giveaways", value=", ".join(f"`{config.PREFIX}{c}`" for c in gw), inline=False)
 
         slash_cmds = ["sc", "invite", "kick", "ban", "clear", "unban", "setnick", "role_give", "role_remove", "move_all", "move_user", "moveme", "move_role"]
-        embed.add_field(name="Slash Commands", value=", ".join(f"`/{c}`" for c in slash_cmds), inline=False)
+        embed.add_field(name="⚡ Slash Commands", value=", ".join(f"`/{c}`" for c in slash_cmds), inline=False)
 
         await ctx.send(embed=embed)
 
