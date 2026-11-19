@@ -35,7 +35,7 @@ class SlashCog(commands.Cog, name="Slash"):
         )
         embed.add_field(
             name="GitHub",
-            value="[Visit GitHub](https://github.com/y-nabeelxd/Discord-MultiBot-py)",
+            value="[Visit GitHub](https://github.com/y-nabeelxd/discord-multibot)",
             inline=False,
         )
         view = discord.ui.View()
@@ -43,7 +43,7 @@ class SlashCog(commands.Cog, name="Slash"):
             discord.ui.Button(
                 label="Visit GitHub",
                 style=discord.ButtonStyle.link,
-                url="https://github.com/y-nabeelxd/Discord-MultiBot-py",
+                url="https://github.com/y-nabeelxd/discord-multibot",
             )
         )
         await interaction.response.send_message(embed=embed, view=view)
